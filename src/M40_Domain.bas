@@ -1,15 +1,12 @@
 Attribute VB_Name = "M40_Domain"
 '============================================================
-' M40_Domain
-' 目的 : 牛ID生成・チェックディジット・業務ロジック
-' 依存 : なし（下位のUTLのみ）
-' 提供 : GenerateCowID, AddCheckDigit, ClassifyMovement ...
+' M40_Domain : ID生成/チェックディジット/業務判定
 '============================================================
 Option Explicit
 
 
 ' 指定された個体識別番号をintervalだけ増減させ、新しいチェックディジット付き番号を返す
-Function GenerateCowID(ByVal cowIDNumber As String, ByVal interval As Long) As String
+Public Function GenerateCowID(ByVal cowIDNumber As String, ByVal interval As Long) As String
     Dim farmCode As Long
     Dim serialNumber As Long
     Dim newSerialBase As Long
@@ -35,7 +32,7 @@ End Function
 
 
 ' チェックディジットを付けた個体識別番号（10桁）を返す
-Function AddCheckDigit(ByVal number As Long) As String
+Public Function AddCheckDigit(ByVal number As Long) As String
     Dim evenSum As Long, oddSum As Long
     Dim numberStr As String
     Dim i As Integer
@@ -58,3 +55,7 @@ Function AddCheckDigit(ByVal number As Long) As String
     AddCheckDigit = numberStr & CStr(checkDigit)
 End Function
 
+
+Public Sub ClassifyMovementFlags(ByRef flags() As Boolean, ByVal idou As Variant, ByVal startIn As Boolean, ByVal endIn As Boolean)
+    ' 期首/出生/購入/売却/死亡/期末のフラグ決定ロジックを集約
+End Sub
