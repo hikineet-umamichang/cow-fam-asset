@@ -14,6 +14,44 @@ Private Const MAX_RETRY_READY As Long = 5                ' Œ‹‰Ê‘Ò‚¿‚ÌÅ‘åƒ|[ƒŠƒ
 Private Const BASE_WAIT_MS As Long = 120                 ' ƒoƒbƒNƒIƒt‚ÌŠî€‘Ò‹@(ms)
 
 '============================================================
+' SearchInitialCows : Å¬ŒÀ‚ÌƒXƒNƒŒƒCƒsƒ“ƒOŠm”F—p
+'============================================================
+Public Sub SearchInitialCows(ByVal cow_list As Variant)
+    If IsEmpty(cow_list) Then
+        MsgBox "cow_list ‚ª‹ó‚Å‚·BŒŸõ‚ğƒXƒLƒbƒv‚µ‚Ü‚·B", vbExclamation
+        Exit Sub
+    End If
+
+    Dim drv As New Selenium.ChromeDriver
+    Set drv = InitDriver()
+
+    Dim total As Long: total = UBound(cow_list, 1)
+    Dim i As Long
+    Dim kotai As Variant, idou As Variant
+    Dim ok As Boolean
+
+    For i = 1 To total
+        Dim CowID As String
+        CowID = CStr(cow_list(i, 1))
+
+        ok = CowSearch(drv, CowID, kotai, idou)
+'        If ok Then
+'            Debug.Print "[" & i & "/" & total & "] " & cowID & " ... OK"
+'            Debug.Print "  ŒÂ‘Ìî•ñ s”: " & IIf(IsEmpty(kotai), 0, UBound(kotai, 1))
+'            Debug.Print "  ˆÙ“®î•ñ s”: " & IIf(IsEmpty(idou), 0, UBound(idou, 1))
+'        Else
+'            Debug.Print "[" & i & "/" & total & "] " & cowID & " ... æ“¾¸”s"
+'        End If
+
+        ' •K—v‚È‚ç­‚µ‘Ò‹@iƒT[ƒo‚Ö‚Ì•‰‰×‚ğ‰º‚°‚éj
+        Application.Wait Now + TimeSerial(0, 0, 1)
+    Next i
+
+    drv.Quit
+    Debug.Print "=== SearchInitialCows end ==="
+End Sub
+
+'============================================================
 ' Driver ‰Šú‰»
 '============================================================
 Public Function InitDriver() As Selenium.ChromeDriver
@@ -29,7 +67,7 @@ End Function
 ' ¬Œ÷: Trueikotai/idou ‚É2ŸŒ³”z—ñjA¸”s: Falseikotai/idou ‚Í Emptyj
 '============================================================
 Public Function CowSearch(ByVal drv As Selenium.ChromeDriver, _
-                          ByVal cowID As String, _
+                          ByVal CowID As String, _
                           ByRef kotai As Variant, _
                           ByRef idou As Variant) As Boolean
     Dim ok As Boolean
@@ -41,7 +79,7 @@ Public Function CowSearch(ByVal drv As Selenium.ChromeDriver, _
     If Not ok Then Exit Function
 
     ' 2) ID“ü—Í•ŒŸõ
-    ok = InputAndSubmitID(drv, cowID)
+    ok = InputAndSubmitID(drv, CowID)
     If Not ok Then Exit Function
 
     ' 3) Œ‹‰Ê‘Ò‚¿¨ƒe[ƒuƒ‹“Ç‚İo‚µ
@@ -78,7 +116,7 @@ End Function
 '============================================================
 ' ID“ü—Í¨Enter‘—M
 '============================================================
-Private Function InputAndSubmitID(ByVal drv As Selenium.ChromeDriver, ByVal cowID As String) As Boolean
+Private Function InputAndSubmitID(ByVal drv As Selenium.ChromeDriver, ByVal CowID As String) As Boolean
     Dim myBy As New By
     Dim sKey As New Selenium.keys
 
@@ -90,7 +128,7 @@ Private Function InputAndSubmitID(ByVal drv As Selenium.ChromeDriver, ByVal cowI
 
     ' 10Œ…ƒ[ƒƒpƒfƒBƒ“ƒO
     Dim id10 As String
-    id10 = Format$(cowID, "0000000000")
+    id10 = Format$(CowID, "0000000000")
 
     drv.FindElementByName(INPUT_NAME_IDNO).Clear
     drv.FindElementByName(INPUT_NAME_IDNO).SendKeys id10

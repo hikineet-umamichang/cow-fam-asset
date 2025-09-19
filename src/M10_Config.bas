@@ -32,13 +32,10 @@ Public Sub PrepareSheetsAndDates()
     Dim sy As Variant, sm As Variant, sd As Variant
     With wb.Sheets(SHEET_INPUT)
         sy = .Range("H6").value: sm = .Range("I6").value: sd = .Range("J6").value
-        If IsNumeric(sy) And IsNumeric(sm) And IsNumeric(sd) Then
-            start_date = DateSerial(CLng(sy), CLng(sm), CLng(sd))
+        If IsEmpty(sy) And IsEmpty(sm) And IsEmpty(sd) Then
+            start_date = DateAdd("yyyy", -1, end_date) + 1
         Else
-            start_date = DateAdd("yyyy", -1, end_date)
-            .Range("H6").value = Year(start_date)
-            .Range("I6").value = Month(start_date)
-            .Range("J6").value = Day(start_date)
+            start_date = DateSerial(CLng(sy), CLng(sm), CLng(sd))
         End If
     End With
 End Sub

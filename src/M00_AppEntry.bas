@@ -27,25 +27,28 @@ Public Sub main()
     '■牛ID統合・重複除去
     Dim cow_list As Variant
     cow_list = BuildUniqueCowList(start_cows, end_cows, moved_cows)
-    If IsEmpty(cow_list) Or end_date = DateSerial(1999, 12, 31) Then
-        MsgBox "入力データがありません。終了します。"
+    If IsEmpty(cow_list) Then
+        MsgBox "牛データがありません。終了します。"
+        Exit Sub
+    ElseIf end_date = DateSerial(1999, 11, 30) Then
+        MsgBox "決算日が未入力です。終了します。"
         Exit Sub
     End If
 
     '■牧場名の取得（最初の1頭を使って識別）
-    farm_name = GetFarmName(cow_list)
+'    farm_name = GetFarmName(cow_list)
 
     '■期首・期末に記録があった牛をスクレイピング
     Call SearchInitialCows(cow_list)
 
     '■当期出生分（推定）の牛を検索
-    Call SearchGeneratedCows
+'    Call SearchGeneratedCows
     
     '■出力シートの作成（詳細・集計）
-    Call CreateOutputSheets
+'    Call CreateOutputSheets
 
     '■集計シート整形・計算式入力
-    Call FormatOutputSheets
+'    Call FormatOutputSheets
 
     '■終了通知と処理時間表示
     end_time = Time
